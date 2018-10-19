@@ -7,13 +7,31 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# downloading the relevant libraries
 library(tidyverse)
+library(dplyr)
 library(readxl)
+library(janitor)
+library(knitr)
+library(kableExtra)
 ```
 
-```{r}
-x <- read_excel("2018 Season Stats.xlsx", skip = 1)
+```{r echo = FALSE}
+# creates a dataframe containing the individual statisitics from the UMass Lowell game
+umass_stats <- read_excel("2018 Season Stats.xlsx", skip = 1, n_max = 45) %>% 
+  clean_names()
 
-x
+# sets missing values (players who did not record a stat in the given column) equal to 0
+umass_stats[is.na(umass_stats)] <- 0
+
+# creates a table of the data
+umass_stats %>% 
+  kable(caption = "Individual statistics from the game against UMass-Lowell") %>% 
+  kable_styling(bootstrap_options = "striped")
+
+# calculates then prints the total number of shots taken
+umass_stats %>% 
+  summarise(total_shots = sum(sh))
 ```
 
