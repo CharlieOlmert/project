@@ -17,6 +17,7 @@ library(knitr)
 library(kableExtra)
 ```
 
+For the project, I plan to download the individual and team statistics from all of last year's games for the men's varsity lacrosse team. Below, I have just downloaded the individual statistics from the first game, shown it in a table, and calculated Harvard's total shots. Going forward, I plan to rewatch our games from last year and time when shots were taken during each possession to see how we will need to adjust as NCAA lacrosse is adding a shot clock this year.
 ```{r echo = FALSE}
 # creates a dataframe containing the individual statisitics from the UMass Lowell game
 umass_stats <- read_excel("2018 Season Stats.xlsx", skip = 1, n_max = 45) %>% 
@@ -30,7 +31,7 @@ umass_stats %>%
   kable(caption = "Individual statistics from the game against UMass-Lowell") %>% 
   kable_styling(bootstrap_options = "striped")
 
-# calculates then prints the total number of shots taken
+# calculates and prints the total number of shots taken
 umass_stats %>% 
   summarise(total_shots = sum(sh))
 ```
