@@ -1,0 +1,19 @@
+---
+title: "early_data"
+author: "Charlie Olmert"
+date: "10/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+x <- read_excel("2018 Season Stats.xlsx", skip = 1)
+
+x
+```
+
