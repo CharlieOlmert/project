@@ -26,6 +26,9 @@ umass_stats <- read_excel("2018 Season Stats.xlsx", skip = 1, n_max = 45) %>%
 # sets missing values (players who did not record a stat in the given column) equal to 0
 umass_stats[is.na(umass_stats)] <- 0
 
+umass_stats %>% 
+  write_rds(path = "project_test/saved_data")
+
 # creates a table of the data
 umass_stats %>% 
   kable(caption = "Individual statistics from the game against UMass-Lowell") %>% 
