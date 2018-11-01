@@ -11,6 +11,7 @@ library(shiny)
 library(tidyverse)
 library(tidytext)
 
+# reads in saved statistical data
 lowell_game <- read_rds(path = "saved_data")
 
 # Define UI for application that draws a histogram
@@ -19,7 +20,7 @@ ui <- fluidPage(
    # Application title
    titlePanel("Harvard Men's Lacrosse vs. UMass Lowell"),
    
-   # Sidebar with a slider input for number of bins 
+   # Sidebar with a drop-down menu to select a player on the team (this is currently serves no purpose, though)
    sidebarLayout(
         sidebarPanel(
           selectInput("name", "Player:", 
@@ -38,6 +39,8 @@ ui <- fluidPage(
 server <- function(input, output) {
    
    output$distPlot <- renderPlot({
+      # creating graph that shows shots for each player from the UMass Lowell Game, 
+      # with lighter colors showing players that scored more goals
       lowell_game %>% 
       ggplot(aes(x = number, y = sh, fill = g)) + 
       geom_bar(stat = "identity", position = "dodge") +
