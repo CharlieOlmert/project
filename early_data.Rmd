@@ -28,7 +28,7 @@ umass_stats[is.na(umass_stats)] <- 0
 
 umass_stats %>% 
   # saving the data to be used in Shiny app
-  write_rds(path = "project_test/saved_data")
+  write_rds(path = "/Users/charlie/Data/project/project_test/saved_data")
 
 # creates a table of the data
 umass_stats %>% 
