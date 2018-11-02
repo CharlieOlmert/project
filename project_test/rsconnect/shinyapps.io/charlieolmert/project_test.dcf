@@ -5,8 +5,8 @@ account: charlieolmert
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 547500
-bundleId: 1677187
+bundleId: 1677544
 url: https://charlieolmert.shinyapps.io/project_test/
-when: 1541103509.08524
+when: 1541118977.72841
 asMultiple: FALSE
 asStatic: FALSE
