@@ -12,7 +12,7 @@ library(tidyverse)
 library(tidytext)
 
 # reads in saved statistical data
-lowell_game <- read_rds(path = "/Users/charlie/Data/project/project_test/saved_data")
+lowell_game <- read_rds(path = "saved_data")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
