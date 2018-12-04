@@ -1,0 +1,162 @@
+---
+title: "map"
+author: "Charlie Olmert"
+date: "12/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(readxl)
+library(janitor)
+library(tidyverse)
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+# Creating a map was one of the hardest parts of the project. After banging my head against
+# a wall for some time, I went through David Sparks's is.r blog at http://is-r.tumblr.com/page/5, 
+# which he recommended to me. That helped a ton with thinking about adding heat to the map, but 
+# drawing the actual map remained mystery. However, Professor Ewen Gallic posted a detailed and 
+# complex way of creating a basketball court, and I have used quite a bit of that code here to 
+# guide me in creating half of a lacrosse field. Many of his variables/comments are in French, so 
+# my French knowledge helped quite a bit!
+
+circle_fun <- function(center=c(0,0), diameter=1, npoints=500, start=0, end=2){
+  tt <- seq(start*pi, end*pi, length.out=npoints)
+  data.frame(
+    x = center[1] + diameter / 2 * cos(tt),
+    y = center[2] + diameter / 2 * sin(tt)
+  )
+}
+
+# Gives y coordinates of the opposite side
+rev_y <- function(y) 94-y
+
+# From x and y coordinates for a line (represented by a polygon here),
+# a number of group and a short description
+# creates a data.frame for this line
+# in order to use it with ggplot2.
+new_coords <- function(x, y, group, descri){
+  new_coords_df <- data.frame(x = x, y = y)
+  new_coords_df$group <- group
+  new_coords_df$side <- 1
+  group <- group + 1
+  
+  # The same thing for the opposite side
+  new_coords_df2 <- data.frame(x = x, y = rev_y(y))
+  new_coords_df2$group <- group
+  new_coords_df2$side <- 2
+  group <<- group + 1
+  
+  # On reunit les donnees
+  new_coords_df <- rbind(new_coords_df, new_coords_df2)
+  new_coords_df$descri <- descri
+  
+  return(new_coords_df)
+}
+
+# Free Throws
+cercle_lf_out <- circle_fun(center = c(31,23.5), diameter = 7)
+cercle_lf_in <- circle_fun(center = c(31,23.5), diameter = 7)
+
+
+group <- 1
+court <- new_coords(c(6-1/6,6-1/6, 50 + 1/6, 50 + 1/6), c(-10 - 1/6,-10,-10,-10 - 1/6), group = group, descri = "left boundary")
+court <- rbind(court, new_coords(x = c(6-1/6,6-1/6,6,6), y = c(0,47-1/12,47-1/12,0), group = group, descri = "restraining line"))
+court <- rbind(court, new_coords(x = c(50,50,50+1/6,50+1/6), y = c(0,47-1/12,47-1/12,0), group = group, descri = "end line"))
+court <- rbind(court, new_coords(x = c(6-1/6,6-1/6,50+1/6,50+1/6), y = c(94/2-1/12,94/2, 94/2, 94/2-1/12), group = group, descri = "right boundary"))
+
+court <- rbind(court, new_coords(x = c(cercle_lf_out[1:500,"x"], rev(cercle_lf_in[1:500,"x"])),
+                                y = c(cercle_lf_out[1:500,"y"], rev(cercle_lf_in[1:500,"y"])), group = group, descri = "crease"))
+
+
+
+# Given the angle theta and the court data frame,
+# rotates the coordinates of the court by an angle theta
+rotate_court <- function(court, theta=pi/2){
+  court_r <- court
+  court_r$x <- court_r$x / 180 * pi
+  court_r$y <- court_r$y / 180 * pi
+  matrice_r <- matrix(c(cos(theta), sin(theta), -sin(theta), cos(theta)), ncol = 2)
+  coords_r <- apply(court_r[,c("x","y")], 1, function(x) x %*% matrice_r)
+  court_r$x <- coords_r[1,] ; court_r$y <- coords_r[2,]
+  court_r$x <- court_r$x * 180 / pi
+  court_r$y <- court_r$y * 180 / pi
+  return(court_r)
+}
+
+library(ggplot2)
+P_half_180 <- ggplot() + geom_polygon(data = rotate_court(court[court$side==1,], theta = pi/2), aes(x = x, y = y, group = group), col = "gray") +
+  coord_equal() +
+  xlim(-2,50) +
+  ylim(-55,2) +
+  scale_x_continuous(breaks = c(0, 23.5, 47)) +
+  scale_y_continuous(breaks = c(0, -12.5, -25, -37.5, -50)) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(), axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(), axis.title = element_blank()
+  )
+
+shoots <- data.frame(x = c(25,15), y = c(-10,-10), score = c(TRUE,FALSE))
+# If you use a rotate function, don't forget to apply the same rotation
+# to your shoots coordinates !
+#shoots <- rotate_court(shoots, theta = pi/2)
+
+P_half_180 + geom_point(data = shoots, aes(x = x, y = y, col = score), alpha = .8) +
+  scale_color_manual(values = c("TRUE" = "#00FF00", "FALSE" = "#FF0000"))
+```
+
+```{r}
+library(grid)
+library(jpeg)
+library(png)
+
+# creates a dataframe containing the individual statisitics from the UMass Lowell game
+umass_stats <- read_excel("2018 Season Stats.xlsx", skip = 1, n_max = 45) %>% 
+  clean_names()
+
+# sets missing values (players who did not record a stat in the given column) equal to 0
+umass_stats[is.na(umass_stats)] <- 0
+
+# half court image
+courtImg.URL <- "page_lacrosse_mens.png"
+court <- rasterGrob(readPNG((courtImg.URL)),
+           width=unit(1,"npc"), height=unit(1,"npc"))
+
+# plot using NBA court background and colour by shot zone
+field <- ggplot(umass_stats, aes(x=number, y=sh)) + 
+      annotation_custom(court, -250, 250, -50, 420) +
+      geom_bar(stat = "identity", position = "dodge") +
+      xlim(-250, 250) +
+      ylim(-50, 420)
+
+shoots <- data.frame(x = c(0), y = c(222), score = c(TRUE))
+
+
+field
+
+field + geom_point(data = shoots, aes(x = x, y = y, col = score), alpha = .8) +
+  scale_color_manual(values = c("TRUE" = "#00FF00", "FALSE" = "#FF0000"))
+```
+
+```{r}
+```
+data(hadley, package="ggmap")
+img <- hadley
+set.seed(1)      # for reproducible example
+df  <- data.frame(x=rnorm(100,mean=c(150,250),sd=25),
+                  y=rnorm(100,mean=480, sd=20))
+
+ggplot(df, aes(x,y))  + 
+  annotation_raster(img, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf)+
+  stat_density2d(geom = "polygon", aes(fill=..level..)) + 
+  geom_point(size=0.5)+
+  scale_fill_gradient(low="green",high="red") + 
+  scale_x_continuous(limits=c(0,dim(img)[2]),expand=c(0,0))+
+  scale_y_continuous(limits=c(0,dim(img)[1]),expand=c(0,0))+
+  coord_fixed()
+```
+
