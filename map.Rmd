@@ -8,7 +8,9 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-
+library(grid)
+library(jpeg)
+library(png)
 library(readxl)
 library(janitor)
 library(tidyverse)
@@ -109,40 +111,53 @@ P_half_180 + geom_point(data = shoots, aes(x = x, y = y, col = score), alpha = .
   scale_color_manual(values = c("TRUE" = "#00FF00", "FALSE" = "#FF0000"))
 ```
 
-```{r}
-library(grid)
-library(jpeg)
-library(png)
-
-# creates a dataframe containing the individual statisitics from the UMass Lowell game
-umass_stats <- read_excel("2018 Season Stats.xlsx", skip = 1, n_max = 45) %>% 
-  clean_names()
-
-# sets missing values (players who did not record a stat in the given column) equal to 0
-umass_stats[is.na(umass_stats)] <- 0
-
-# half court image
-courtImg.URL <- "page_lacrosse_mens.png"
-court <- rasterGrob(readPNG((courtImg.URL)),
-           width=unit(1,"npc"), height=unit(1,"npc"))
-
-# plot using NBA court background and colour by shot zone
-field <- ggplot(umass_stats, aes(x=number, y=sh)) + 
-      annotation_custom(court, -250, 250, -50, 420) +
-      geom_bar(stat = "identity", position = "dodge") +
-      xlim(-250, 250) +
-      ylim(-50, 420)
-
-shoots <- data.frame(x = c(0), y = c(222), score = c(TRUE))
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 
 
-field
+# Comprehensive and clean statistics from the Brown game, which is what
+# I will be looking at for the Demo Day because data collection takes
+# quite some time.
 
-field + geom_point(data = shoots, aes(x = x, y = y, col = score), alpha = .8) +
-  scale_color_manual(values = c("TRUE" = "#00FF00", "FALSE" = "#FF0000"))
+brown_game <- read_excel("brown_shots.xlsx") 
+
+# Image of the restraining (offensive) area of a lacrosse field being made adjustable so that
+# I can use it as the background for a ggplot graph.
+
+field_Img <- "page_lacrosse_mens.png"
+field <- rasterGrob(readPNG(field_Img),
+           width = unit(1, "npc"), height = unit(1, "npc"))
+
+# Labels to be used for facet_wrap() in the upcoming graph
+labels <- c(`T` = "Shots that satisfied the new 60-second shot clock rule", 
+            `F` = "Shots that failed the new 60-second shot clock rule")
+
+# Plotting shots onto the lacrosse field, with results mapped onto color (green for goal, 
+# black for miss, red for save). Two different maps for shots that satisfy the new 60-second
+# shot clock rule versus shots that fail the new rule.
+
+field_plot <- ggplot(brown_game, aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
+  annotation_custom(field, -250, 250, -50, 420) +
+  geom_point(stat = "identity", position = "dodge", alpha = 0.5) +
+  xlim(-250, 250) +
+  ylim(-50, 420) +
+  facet_wrap(~ sh_clock, ncol = 1, labeller=labeller(sh_clock = labels)) +
+  scale_color_manual(labels = c("Goal", "Miss", "Save"), 
+                     values = c("#00FF00", "black", "red"))  +
+  labs(title = "Harvard Men's Lacrosse Shot Accuracy vs. Brown",
+       x = "Offensive Area of Field", 
+       color = "Shot Result") +
+  # Hiding numbers on the axes
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank())
+
+field_plot
+
 ```
 
-```{r}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 ```
 data(hadley, package="ggmap")
 img <- hadley
