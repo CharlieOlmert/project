@@ -138,8 +138,9 @@ server <- function(input, output) {
              axis.text.y = element_blank(),
              axis.ticks.y = element_blank(),
              axis.ticks.x = element_blank(),
-             axis.text.x = element_blank()) +
-       stat_density2d(aes(fill=..level..), geom="polygon", alpha = .1) + 
+             axis.text.x = element_blank(),
+             legend.position="none") +
+       stat_density2d(aes(fill=..level..), geom="polygon", alpha = .13) + 
        scale_fill_distiller(palette = "Spectral")
      
      heat_map
@@ -182,13 +183,13 @@ server <- function(input, output) {
      # (green for goal, black for miss, red for save). 
      
      shot_map <- brown_app %>% 
-       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
+       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
        annotation_custom(field, -250, 250, -50, 420) +
        labs(title = "Shot Accuracy vs. Brown",
             x = "Offensive Area of Field", 
             color = "Shot Result",
             subtitle = my_subtitle) +
-       geom_point(stat = "identity", position = "dodge") +
+       geom_point(stat = "identity", position = "dodge", size = 2, alpha = 0.7) +
        xlim(-250, 250) +
        ylim(-50, 420) +
        scale_colour_manual(values = MyPalette) +
@@ -249,13 +250,13 @@ server <- function(input, output) {
      # would have expired) have noticeably different results.
      
      clock_map <- brown_app %>% 
-       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
+       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
        annotation_custom(field, -250, 250, -50, 420) +
        labs(title = "Shot Clock Abidance vs. Brown",
             x = "Offensive Area of Field", 
             color = "Shot Result",
             subtitle = my_subtitle_2) +
-       geom_point(stat = "identity", position = "dodge") +
+       geom_point(stat = "identity", position = "dodge", size = 2, alpha = 0.7) +
        xlim(-250, 250) +
        ylim(-50, 420) +
        scale_colour_manual(values = MyPalette) +
