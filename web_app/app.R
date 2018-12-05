@@ -182,7 +182,7 @@ server <- function(input, output) {
      # (green for goal, black for miss, red for save). 
      
      shot_map <- brown_app %>% 
-       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
+       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
        annotation_custom(field, -250, 250, -50, 420) +
        labs(title = "Shot Accuracy vs. Brown",
             x = "Offensive Area of Field", 
@@ -249,7 +249,7 @@ server <- function(input, output) {
      # would have expired) have noticeably different results.
      
      clock_map <- brown_app %>% 
-       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
+       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
        annotation_custom(field, -250, 250, -50, 420) +
        labs(title = "Shot Clock Abidance vs. Brown",
             x = "Offensive Area of Field", 
