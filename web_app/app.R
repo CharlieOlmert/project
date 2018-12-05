@@ -282,7 +282,7 @@ server <- function(input, output) {
                    result provided. The user can also look at heat maps for shots based on result.
                    Finally, this app also serves a forward-looking purpose for assessing how our offense
                    will fare under the new 80-second shot clock being introduced in 2019, as the third 
-                   tab allows the user totoggle between shots that would satisy or violate the shot clock.")
+                   tab allows the user to toggle between shots that would satisy or violate the shot clock.")
    
      HTML(paste(h3(str1), p(str2)))})     
 }
