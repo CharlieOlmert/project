@@ -183,13 +183,13 @@ server <- function(input, output) {
      # (green for goal, black for miss, red for save). 
      
      shot_map <- brown_app %>% 
-       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
+       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
        annotation_custom(field, -250, 250, -50, 420) +
        labs(title = "Shot Accuracy vs. Brown",
             x = "Offensive Area of Field", 
             color = "Shot Result",
             subtitle = my_subtitle) +
-       geom_point(stat = "identity", position = "dodge", size = 2, alpha = 0.7) +
+       geom_point(stat = "identity", position = "dodge") +
        xlim(-250, 250) +
        ylim(-50, 420) +
        scale_colour_manual(values = MyPalette) +
@@ -200,7 +200,10 @@ server <- function(input, output) {
            axis.ticks.x = element_blank(),
            axis.text.x = element_blank()) 
      
-     shot_map
+     # Does not show alpha or size in the legend
+     
+     shot_map + guides(alpha = FALSE, size = FALSE)
+     
    }, height = 500, width = 700, units = "px")
    
    output$clock <- renderPlot({
@@ -250,13 +253,13 @@ server <- function(input, output) {
      # would have expired) have noticeably different results.
      
      clock_map <- brown_app %>% 
-       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
+       ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
        annotation_custom(field, -250, 250, -50, 420) +
        labs(title = "Shot Clock Abidance vs. Brown",
             x = "Offensive Area of Field", 
             color = "Shot Result",
             subtitle = my_subtitle_2) +
-       geom_point(stat = "identity", position = "dodge", size = 2, alpha = 0.7) +
+       geom_point(stat = "identity", position = "dodge") +
        xlim(-250, 250) +
        ylim(-50, 420) +
        scale_colour_manual(values = MyPalette) +
@@ -267,7 +270,10 @@ server <- function(input, output) {
              axis.ticks.x = element_blank(),
              axis.text.x = element_blank()) 
      
-     clock_map
+     # Does not show alpha or size in the legend
+     
+     clock_map + guides(alpha = FALSE, size = FALSE)
+     
    }, height = 400, width = 650, units = "px")
    
    output$about <- renderUI({
