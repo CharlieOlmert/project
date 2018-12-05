@@ -78,7 +78,7 @@ ui <- fluidPage(
      
       mainPanel(
         tabsetPanel(
-          tabPanel("About this app", htmlOutput("about")),
+          tabPanel("About This App", htmlOutput("about")),
           tabPanel("All Shots", plotOutput("all_shots"), htmlOutput("stats")), 
           tabPanel("Heat Maps", plotOutput("heat"),
                    selectInput("result", "Shot Result:", 
