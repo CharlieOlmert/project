@@ -120,10 +120,30 @@ P_half_180 + geom_point(data = shoots, aes(x = x, y = y, col = score), alpha = .
 
 brown_game <- read_excel("brown_shots.xlsx") 
 
+brown_game %>% 
+  # saving the data to be used in Shiny app
+  write_rds(path = "/Users/charlie/Data/project/project_test/brown")
+```
+
+```{r}
+players <-  unique(brown_game$player)
+
+positions <- unique(brown_game$position)
+
+all <- "Whole Team"
+
+shot_options <- c(all, positions, players)
+
+shot_options
+```
+
+
+```{r}
+
 # Image of the restraining (offensive) area of a lacrosse field being made adjustable so that
 # I can use it as the background for a ggplot graph.
 
-field_Img <- "page_lacrosse_mens.png"
+field_Img <- "test.png"
 field <- rasterGrob(readPNG(field_Img),
            width = unit(1, "npc"), height = unit(1, "npc"))
 
@@ -132,29 +152,40 @@ labels <- c(`T` = "Shots that satisfied the new 60-second shot clock rule",
             `F` = "Shots that failed the new 60-second shot clock rule")
 
 # Plotting shots onto the lacrosse field, with results mapped onto color (green for goal, 
-# black for miss, red for save). Two different maps for shots that satisfy the new 60-second
-# shot clock rule versus shots that fail the new rule.
+# black for miss, red for save). Creating a density heat map based on shot location 
+# was quite tough (quite a bit of trial and error), but I finally figured it out.
+# For the heat density map, the center, red area represents where the most shots of that
+# type are being taken
 
-field_plot <- ggplot(brown_game, aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
+heat_map <- brown_game %>% 
+  filter(result == "G") %>% 
+  ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
   annotation_custom(field, -250, 250, -50, 420) +
-  geom_point(stat = "identity", position = "dodge", alpha = 0.5) +
-  xlim(-250, 250) +
-  ylim(-50, 420) +
-  facet_wrap(~ sh_clock, ncol = 1, labeller=labeller(sh_clock = labels)) +
-  scale_color_manual(labels = c("Goal", "Miss", "Save"), 
-                     values = c("#00FF00", "black", "red"))  +
   labs(title = "Harvard Men's Lacrosse Shot Accuracy vs. Brown",
        x = "Offensive Area of Field", 
        color = "Shot Result") +
+  #stat_density2d(geom = "polygon", aes(fill=..level..)) +
+  geom_point(stat = "identity", position = "dodge", alpha = 1) +
+  xlim(-250, 250) +
+  ylim(-50, 420) +
+  scale_color_manual(labels = c("Goal", "Miss", "Save"), 
+                     values = c("#00FF00", "black", "red")) +
   # Hiding numbers on the axes
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.ticks.x = element_blank(),
-        axis.text.x = element_blank())
+        axis.text.x = element_blank()) +
+  stat_density2d(aes(fill=..level..), geom="polygon", alpha = .2) + 
+  scale_fill_distiller(palette = "Spectral")
 
-field_plot
-
+heat_map
+```
+heat_map +
+  stat_density2d(aes(x=x, y=y, fill=..level..), data=brown_game, geom="polygon", alpha = .2) + 
+  geom_density_2d(aes(x=x, y=y), data=brown, colour = "white", alpha = .4) +
+  scale_fill_distiller(palette = "Spectral")
+  #scale_fill_gradient(low="green",high="red") + 
 ```
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
