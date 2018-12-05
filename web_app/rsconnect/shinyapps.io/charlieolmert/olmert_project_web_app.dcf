@@ -1,0 +1,12 @@
+name: olmert_project_web_app
+title: olmert_project_web_app
+username:
+account: charlieolmert
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 604203
+bundleId: 1741107
+url: https://charlieolmert.shinyapps.io/olmert_project_web_app/
+when: 1543975255.44251
+asMultiple: FALSE
+asStatic: FALSE

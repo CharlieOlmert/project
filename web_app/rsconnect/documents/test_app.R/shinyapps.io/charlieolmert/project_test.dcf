@@ -1,0 +1,12 @@
+name: project_test
+title: project_test
+username:
+account: charlieolmert
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 547500
+bundleId: 1677506
+url: https://charlieolmert.shinyapps.io/project_test/
+when: 1541116832.74584
+asMultiple: FALSE
+asStatic: FALSE
