@@ -37,11 +37,11 @@ field <- rasterGrob(readPNG(field_Img),
                     height = unit(1, "npc"))
 
 # Labels to be used for facet_wrap() in the upcoming graph showing differences
-# in shots based on those that satisfy the new NCAA 60-second shot clock rule
+# in shots based on those that satisfy the new NCAA 80-second shot clock rule
 # vs. those shots that would have violated the new shot clock rule
 
-labels <- c(`T` = "Shots that satisfied the new 60-second shot clock rule", 
-            `F` = "Shots that failed the new 60-second shot clock rule")
+labels <- c(`T` = "Shots that satisfied the new 80-second shot clock rule", 
+            `F` = "Shots that failed the new 80-second shot clock rule")
 
 # Creating a list, shot_options, that contains options for the whole team, each
 # position, and each player, so that the user can choose to look at shots from
@@ -86,7 +86,7 @@ ui <- fluidPage(
                                selected = brown_app$result[0])
             ),
           tabPanel("Retrospective Shot Clock", plotOutput("clock"),
-                   selectInput("clock_sat", "New 60-second Shot Clock:", 
+                   selectInput("clock_sat", "New 80-second Shot Clock:", 
                                choices = c("Satisfied", "Violated"),
                                selected = "Satisfied"))
       )
@@ -243,7 +243,7 @@ server <- function(input, output) {
      my_subtitle_2 <- paste("Shot Percentage: ", sh_percent$sh_per)
      
      # Plotting shots onto the lacrosse field based on whether the shot would
-     # satisfy the new 60-second shot clock rule in lacrosse. I am looking at
+     # satisfy the new 80-second shot clock rule in lacrosse. I am looking at
      # this to see how much our offense will need to change going forward, as
      # well as to see if shots later in possessions (after the new shot clock
      # would have expired) have noticeably different results.
@@ -281,7 +281,7 @@ server <- function(input, output) {
                    on an actual lacrosse field where they occurred, with shooting percentage and shot
                    result provided. The user can also look at heat maps for shots based on result.
                    Finally, this app also serves a retrospective purpose for assessing how our offense
-                   will fare under the new 60-second shot clock being introduced in 2019, as the third 
+                   will fare under the new 80-second shot clock being introduced in 2019, as the third 
                    tab allows the user totoggle between shots that would satisy or violate the shot clock.")
    
      HTML(paste(h3(str1), p(str2)))})     
