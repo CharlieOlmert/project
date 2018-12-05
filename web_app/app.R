@@ -78,6 +78,7 @@ ui <- fluidPage(
      
       mainPanel(
         tabsetPanel(
+          tabPanel("About this app", htmlOutput("about")),
           tabPanel("All Shots", plotOutput("all_shots"), htmlOutput("stats")), 
           tabPanel("Heat Maps", plotOutput("heat"),
                    selectInput("result", "Shot Result:", 
@@ -217,6 +218,9 @@ server <- function(input, output) {
        }
      }
      
+     # Selecting which shots to show based on the user's input on whether to see
+     # shots that satisfy or violate the new shot clock rule.
+     
      if (input$clock_sat == "Satisfied") {
        brown_app <- brown_app %>% 
          filter(sh_clock == "T")
@@ -265,6 +269,22 @@ server <- function(input, output) {
      clock_map
    }, height = 400, width = 650, units = "px")
    
+   output$about <- renderUI({
+     
+     # Summary of application
+     
+     str1 <- paste("Summary")
+     str2 <- paste("This application gives the user various ways to analyze the shooting performance
+                   of the Harvard Men's Lacrosse Team in the 2018 season. The user has the ability to
+                   choose whether or not to look at shots from the whole team, from specific position
+                   groups, or from individual players. The user can then observe the specified shots 
+                   on an actual lacrosse field where they occurred, with shooting percentage and shot
+                   result provided. The user can also look at heat maps for shots based on result.
+                   Finally, this app also serves a retrospective purpose for assessing how our offense
+                   will fare under the new 60-second shot clock being introduced in 2019, as the third 
+                   tab allows the user totoggle between shots that would satisy or violate the shot clock.")
+   
+     HTML(paste(h3(str1), p(str2)))})     
 }
 
 
