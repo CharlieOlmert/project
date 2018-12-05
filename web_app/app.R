@@ -280,7 +280,7 @@ server <- function(input, output) {
                    groups, or from individual players. The user can then observe the specified shots 
                    on an actual lacrosse field where they occurred, with shooting percentage and shot
                    result provided. The user can also look at heat maps for shots based on result.
-                   Finally, this app also serves a retrospective purpose for assessing how our offense
+                   Finally, this app also serves a forward-looking purpose for assessing how our offense
                    will fare under the new 80-second shot clock being introduced in 2019, as the third 
                    tab allows the user totoggle between shots that would satisy or violate the shot clock.")
    
