@@ -300,7 +300,7 @@ server <- function(input, output) {
                    handle is @LaxFilmRoom, is really at the forefront of using data and numbers to further 
                    understand the sport. Here is a comprehensive article he wrote for InsideLacrosse about 
                    the Cornell offense in which there is a lot of solid analysis and clips to help understand 
-                   the sport and particularly offense: https://www.insidelacrosse.com/article/lax-film-room-why-cornell-s-offense-is-deadlier-than-you-think/51904 
+                   the sport and particularly offense: https://www.insidelacrosse.com/article/lax-film-room-why-cornell-s-offense-is-deadlier-than-you-think/51904. 
                    And here is a link to a website McEwen ran last year that keeps track of data-based analytical 
                    measurements for each NCAA D1 team http://analyticslacrosse.com/d1men/2018/teams. 
                    And, finally, here is a very explanatory InsideLacrosse article about the shot clock 
