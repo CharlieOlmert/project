@@ -280,8 +280,12 @@ server <- function(input, output) {
      
      # Summary of application
      
-     str1 <- paste("Summary")
-     str2 <- paste("This application gives the user various ways to analyze the shooting performance
+     str1 <- paste("Goal")
+     str2 <- paste("The Harvard Men's Lacrosse Team looks to identify and gain every advantage that 
+                   it can possibly have over its opponents, and I am looking into the data behind 
+                   where and when we shoot the ball to find a new edge for the upcoming season.")
+     str3 <- paste("Summary")
+     str4 <- paste("This application gives the user various ways to analyze the shooting performance
                    of the Harvard Men's Lacrosse Team in the 2018 season. The user has the ability to
                    choose whether or not to look at shots from the whole team, from specific position
                    groups, or from individual players. The user can then observe the specified shots 
@@ -290,8 +294,19 @@ server <- function(input, output) {
                    Finally, this app also serves a forward-looking purpose for assessing how our offense
                    will fare under the new 80-second shot clock being introduced in 2019, as the third 
                    tab allows the user to toggle between shots that would satisy or violate the shot clock.")
-   
-     HTML(paste(h3(str1), p(str2)))})     
+     str5 <- paste("Further Reading")
+     str6 <- paste("For further reading about the latest on data in the sport and the upcoming shot 
+                   clock, I have attached a few links below. Patrick McEwen, whose informative twitter 
+                   handle is @LaxFilmRoom, is really at the forefront of using data and numbers to further 
+                   understand the sport. Here is a comprehensive article he wrote for InsideLacrosse about 
+                   the Cornell offense in which there is a lot of solid analysis and clips to help understand 
+                   the sport and particularly offense: https://www.insidelacrosse.com/article/lax-film-room-why-cornell-s-offense-is-deadlier-than-you-think/51904 
+                   And here is a link to a website McEwen ran last year that keeps track of data-based analytical 
+                   measurements for each NCAA D1 team http://analyticslacrosse.com/d1men/2018/teams. 
+                   And, finally, here is a very explanatory InsideLacrosse article about the shot clock 
+                   coming to NCAA men's lacrosse in 2019: https://www.insidelacrosse.com/article/ncaa-rules-committee-changes-shot-clock-proposal-after-coach-feedback/53063.")
+     
+     HTML(paste(h3(str1), p(str2), h3(str3), p(str4), h3(str5), p(str6)))})  
 }
 
 
