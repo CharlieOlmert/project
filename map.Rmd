@@ -18,14 +18,16 @@ library(tidyverse)
 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-# Comprehensive and clean statistics from the Brown game, which is what
-# I will be looking at for the Demo Day because data collection takes
-# quite some time.
+# Comprehensive and clean shot statistics from Ivy League games
 
 brown_game <- read_excel("brown_shots.xlsx")
+dart_game <- read_excel("dart_shots.xlsx")
+
+# Binding all of the shot data together into one data frame in then writing onto "shot_data" to be
+# used in the Shiny app
 
 brown_game %>% 
-  # saving the data to be used in Shiny app
-  write_rds(path = "/Users/charlie/Data/project/web_app/brown")
+  bind_rows(dart_game) %>% 
+  write_rds(path = "/Users/charlie/Data/project/web_app/shot_data")
 ```
 

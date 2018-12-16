@@ -18,11 +18,11 @@ library(tidyverse)
 
 # Reading in saved shot data
 
-brown_app <- read_rds(path = "brown")
+shots <- read_rds(path = "shot_data")
   
 # Ordering the factor levels for result so that "Goal" appears selected first
 
-brown_app$result <- factor(x = brown_app$result, 
+shots$result <- factor(x = shots$result, 
                            levels = c("Goal",
                                         "Miss",
                                         "Save"), 
@@ -47,8 +47,8 @@ labels <- c(`T` = "Shots that satisfied the new 80-second shot clock rule",
 # position, and each player, so that the user can choose to look at shots from
 # each of these options
 
-players <-  unique(brown_app$player)
-positions <- unique(brown_app$position)
+players <-  unique(shots$player)
+positions <- unique(shots$position)
 all <- "Whole Team"
 shot_options <- c(all, positions, players)
 
@@ -82,8 +82,8 @@ ui <- fluidPage(
           tabPanel("All Shots", plotOutput("all_shots"), htmlOutput("stats")), 
           tabPanel("Heat Maps", plotOutput("heat"),
                    selectInput("result", "Shot Result:", 
-                               choices = levels(factor(brown_app$result)),
-                               selected = brown_app$result[0])
+                               choices = levels(factor(shots$result)),
+                               selected = shots$result[0])
             ),
           tabPanel("Retrospective Shot Clock", plotOutput("clock"),
                    selectInput("clock_sat", "New 80-second Shot Clock:", 
@@ -106,12 +106,12 @@ server <- function(input, output) {
      # and then filtering if so.
      
      if (input$shooter != "Whole Team") {
-       if (input$shooter %in% unique(brown_app$player)) {
-         brown_app <- brown_app %>% 
+       if (input$shooter %in% unique(shots$player)) {
+         shots <- shots %>% 
            filter(player == input$shooter)
        } 
-       else if (input$shooter %in% unique(brown_app$position)) {
-         brown_app <- brown_app %>% 
+       else if (input$shooter %in% unique(shots$position)) {
+         shots <- shots %>% 
            filter(position == input$shooter)
        }
      }
@@ -122,11 +122,11 @@ server <- function(input, output) {
      # the heat density map, the center area represents where the most shots of
      # that type are being taken.
      
-     heat_map <- brown_app %>% 
+     heat_map <- shots %>% 
        filter(result == input$result) %>% 
        ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result)) + 
        annotation_custom(field, -250, 250, -50, 420) +
-       labs(title = "Shot Density vs. Brown",
+       labs(title = "Shot Density",
             x = "Offensive Area of Field", 
             color = "Shot Result") +
        geom_point(stat = "identity", position = "dodge") +
@@ -152,40 +152,35 @@ server <- function(input, output) {
      # and then filtering if so.
      
      if (input$shooter != "Whole Team") {
-       if (input$shooter %in% unique(brown_app$player)) {
-         brown_app <- brown_app %>% 
+       if (input$shooter %in% unique(shots$player)) {
+         shots <- shots %>% 
            filter(player == input$shooter)
        } 
-       else if (input$shooter %in% unique(brown_app$position)) {
-         brown_app <- brown_app %>% 
+       else if (input$shooter %in% unique(shots$position)) {
+         shots <- shots %>% 
            filter(position == input$shooter)
        }
      }
      
      # Finding shot percentage to be used in subtitle of plot
      
-     sh_percent <- brown_app %>% 
-       mutate(shots = n()) %>% 
+     sh_percent <- shots %>% 
+       mutate(shot_n = n()) %>% 
        filter(result == "Goal") %>% 
-       mutate(sh_per = n() / shots,
+       mutate(sh_per = n() / shot_n,
               sh_per = percent(sh_per)) %>% 
        select(sh_per) %>% 
        head(1) 
      
      my_subtitle <- paste("Shot Percentage: ", sh_percent$sh_per)
      
-     
-     # Changing numeric(0) to NA then to 0.
-     
-     #Xsh_percent <- lapply(sh_percent, function(x) if(identical(x, character(0))) NA_character_ else x) 
-     
      # Plotting all shots onto the lacrosse field, with shot result mapped onto color 
      # (green for goal, black for miss, red for save). 
      
-     shot_map <- brown_app %>% 
+     shot_map <- shots %>% 
        ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
        annotation_custom(field, -250, 250, -50, 420) +
-       labs(title = "Shot Accuracy vs. Brown",
+       labs(title = "Shot Accuracy",
             x = "Offensive Area of Field", 
             color = "Shot Result",
             subtitle = my_subtitle) +
@@ -212,12 +207,12 @@ server <- function(input, output) {
      # and then filtering if so.
      
      if (input$shooter != "Whole Team") {
-       if (input$shooter %in% unique(brown_app$player)) {
-         brown_app <- brown_app %>% 
+       if (input$shooter %in% unique(shots$player)) {
+         shots <- shots %>% 
            filter(player == input$shooter)
        } 
-       else if (input$shooter %in% unique(brown_app$position)) {
-         brown_app <- brown_app %>% 
+       else if (input$shooter %in% unique(shots$position)) {
+         shots <- shots %>% 
            filter(position == input$shooter)
        }
      }
@@ -226,20 +221,20 @@ server <- function(input, output) {
      # shots that satisfy or violate the new shot clock rule.
      
      if (input$clock_sat == "Satisfied") {
-       brown_app <- brown_app %>% 
+       shots <- shots %>% 
          filter(sh_clock == "T")
      }
      else if (input$clock_sat == "Violated") {
-       brown_app <- brown_app %>% 
+       shots <- shots %>% 
          filter(sh_clock == "F")
      }
      
      # Finding shot percentage to be used in subtitle of plot
      
-     sh_percent <- brown_app %>% 
-       mutate(shots = n()) %>% 
+     sh_percent <- shots %>% 
+       mutate(shot_n = n()) %>% 
        filter(result == "Goal") %>% 
-       mutate(sh_per = n() / shots,
+       mutate(sh_per = n() / shot_n,
               sh_per = percent(sh_per)) %>% 
        select(sh_per) %>% 
        head(1) 
@@ -252,10 +247,10 @@ server <- function(input, output) {
      # well as to see if shots later in possessions (after the new shot clock
      # would have expired) have noticeably different results.
      
-     clock_map <- brown_app %>% 
+     clock_map <- shots %>% 
        ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
        annotation_custom(field, -250, 250, -50, 420) +
-       labs(title = "Shot Clock Abidance vs. Brown",
+       labs(title = "Shot Clock Abidance",
             x = "Offensive Area of Field", 
             color = "Shot Result",
             subtitle = my_subtitle_2) +
