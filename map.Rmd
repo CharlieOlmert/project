@@ -18,6 +18,14 @@ library(tidyverse)
 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
+# A large part of the work I did on this project is contained neither in this .Rmd file nor the app.R
+# file. This pre-coding work was the time I spent collecting the shot data — about 10 hours. This
+# took so long because I had to go back through all six of the Ivy League games from last season and
+# log the location of each shot in yards in the y-direction and x-direction from the goal and the
+# player who took that shot. I then had to convert those yards to pixels based on the dimensions of
+# the image I used to show the offensive end of the field. Once this data collection and conversion
+# was completed, then I began the coding seen here and in the app.R file.
+
 # Comprehensive and clean shot statistics from all Ivy League games. Film from the Princeton game was
 # cut off.
 
