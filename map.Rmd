@@ -18,20 +18,25 @@ library(tidyverse)
 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
-# Comprehensive and clean shot statistics from Ivy League games
+# Comprehensive and clean shot statistics from all Ivy League games. Film from the Princeton game was
+# cut off.
 
 brown_game <- read_excel("brown_shots.xlsx")
 dart_game <- read_excel("dart_shots.xlsx")
 corn_game <- read_excel("cornell_shots.xlsx")
 penn_game <- read_excel("penn_shots.xlsx")
+pton_game <- read_excel("pton_shots.xlsx")
+yale_game <- read_excel("yale_shots.xlsx")
 
-# Binding all of the shot data together into one data frame in then writing onto "shot_data" to be
-# used in the Shiny app
+# Binding all of the shot data together into one data frame and then writing that data frame onto 
+# "shot_data" to be used in the Shiny app
 
 brown_game %>% 
   bind_rows(dart_game) %>% 
   bind_rows(corn_game) %>% 
   bind_rows(penn_game) %>% 
+  bind_rows(pton_game) %>% 
+  bind_rows(yale_game) %>% 
   write_rds(path = "/Users/charlie/Data/project/web_app/shot_data")
 ```
 
