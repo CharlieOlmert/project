@@ -1,3 +1,5 @@
+# Required libraries
+
 library(shiny)
 library(grid)
 library(jpeg)
