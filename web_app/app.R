@@ -1,12 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(grid)
 library(jpeg)
@@ -24,28 +15,28 @@ shots <- read_rds(path = "shot_data")
 
 shots$result <- factor(x = shots$result, 
                            levels = c("Goal",
-                                        "Miss",
-                                        "Save"), 
+                                      "Miss",
+                                      "Save"), 
                            ordered = TRUE)
 
-# Image of the restraining (offensive) area of a lacrosse field being made
-# adjustable so that I can use it as the background for a ggplot graph.
+# Image of one end of a lacrosse field being made adjustable so that I can use it as the 
+# background for a ggplot graph.
 
 field_Img <- "page_lacrosse_mens.png"
 field <- rasterGrob(readPNG(field_Img),
                     width = unit(1, "npc"), 
                     height = unit(1, "npc"))
 
-# Labels to be used for facet_wrap() in the upcoming graph showing differences
+# Labels to be used in the 'Shot Clock Abidance' tab showing differences
 # in shots based on those that satisfy the new NCAA 80-second shot clock rule
-# vs. those shots that would have violated the new shot clock rule
+# vs. those shots that would have violated the new shot clock rule.
 
 labels <- c(`T` = "Shots that satisfied the new 80-second shot clock rule", 
             `F` = "Shots that failed the new 80-second shot clock rule")
 
-# Creating a list, shot_options, that contains options for the whole team, each
+# Creating a list, 'shot_options', that contains options for the whole team, each
 # position, and each player, so that the user can choose to look at shots from
-# each of these options
+# any single one of these options
 
 players <-  unique(shots$player)
 positions <- unique(shots$position)
@@ -73,8 +64,7 @@ ui <- fluidPage(
                    choices = shot_options,
                    selected = shot_options[0]), width = 3),
       
-      # Tab panels for the Shiny App. The Heat Maps tab allows the user to
-      # select a shot result (Goal, Miss, or Save) to inspect.
+      # Tab panels for the Shiny App with specified Input bars
      
       mainPanel(
         tabsetPanel(
@@ -117,9 +107,9 @@ server <- function(input, output) {
      }
      
      # Plotting shots onto the lacrosse field, filtering for shot result (goal,
-     # save miss), then creating a density heat map based on shot location was
+     # save, or miss), then creating a density heat map based on shot location was
      # quite tough (a lot of trial and error), but I finally figured it out. For
-     # the heat density map, the center area represents where the most shots of
+     # the heat density map, the center areas represent where the most shots of
      # that type are being taken.
      
      heat_map <- shots %>% 
@@ -245,7 +235,7 @@ server <- function(input, output) {
      # satisfy the new 80-second shot clock rule in lacrosse. I am looking at
      # this to see how much our offense will need to change going forward, as
      # well as to see if shots later in possessions (after the new shot clock
-     # would have expired) have noticeably different results.
+     # would have expired) have notably different results.
      
      clock_map <- shots %>% 
        ggplot(aes(x = sh_x_pxls, y = sh_y_pxls, color = result, size = 2, alpha = 0.7)) + 
@@ -291,8 +281,6 @@ server <- function(input, output) {
                    tab allows the user to toggle between shots that would satisy or violate the shot clock.")
      HTML(paste(h3(str1), p(str2), h3(str3), p(str4)))})  
 }
-
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
